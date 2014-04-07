@@ -12,9 +12,23 @@ def isRectangleBlack(rgbPix, top, bottom, left, right):
 
   return 0
 
+def isOne(chiffre):
+  pattern = [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+
+  print pattern
+  print chiffre
+
+  percentage = 0
+  for i in range(0, len(chiffre)):
+    if (pattern[i] == chiffre[i]):
+      percentage = percentage + 1
+
+  return (percentage * 100) / len(chiffre)
+
 if __name__ == '__main__':
   
-  pngFile = Image.open("1.png")
+  filename = sys.argv[1]
+  pngFile = Image.open(filename)
   pix = pngFile.load()
 
   width, heigth = pngFile.size
@@ -41,7 +55,7 @@ if __name__ == '__main__':
         if right == -1 or right < col:
           right = col
 
-  print "top = ", top, "bottom = ", bottom, "left = ", left, "right = ", right
+  #print "top =", top, "bottom =", bottom, "left =", left, "right =", right
 
   chiffre = []
 
@@ -56,5 +70,5 @@ if __name__ == '__main__':
                                       left + j * rectangleWidth,
                                       left + (j + 1) * rectangleWidth))
 
-  print chiffre
-
+  likelihood = isOne(chiffre)
+  print "Confidence that it is a 1:", likelihood, "%"
