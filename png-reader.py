@@ -4,16 +4,22 @@ import Image
 def isBlack(rgbPix):
   return rgbPix == (0, 0, 0)
 
-def isRectangleBlack(rgbPix, top, bottom, left, right):
+def isRectangleBlack(rgbPix, threshold, top, bottom, left, right):
+  rate = 0
   for row in range(top, bottom):
     for col in range(left, right):
       if isBlack(rgbPix[col, row]):
-        return 1
+        rate = rate + 1
 
-  return 0
+  rate = rate / float((bottom - top) * (right - left))
+
+  if rate >= 0.25 * threshold:
+    return 1
+  else:
+    return 0
 
 def isOne(chiffre):
-  pattern = [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+  pattern = [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
 
   print pattern
   print chiffre
@@ -38,10 +44,12 @@ if __name__ == '__main__':
   left = -1
   right = -1
 
+  rate = 0
   for row in range(0, heigth):
     for col in range(0, width):
       
       if isBlack(pix[col, row]):
+        rate = rate + 1
 
         if top == -1:
           top = row
@@ -55,16 +63,18 @@ if __name__ == '__main__':
         if right == -1 or right < col:
           right = col
 
+  rate = rate / float((bottom - top) * (right - left))
+
   #print "top =", top, "bottom =", bottom, "left =", left, "right =", right
 
   chiffre = []
 
-  rectangleHeigth = (bottom - top) / 5
-  rectangleWidth  = (right - left) / 5
+  rectangleHeigth = (bottom - top) / 10
+  rectangleWidth  = (right - left) / 10
 
-  for i in range(0, 5):
-    for j in range(0, 5):
-      chiffre.append(isRectangleBlack(pix, 
+  for i in range(0, 10):
+    for j in range(0, 10):
+      chiffre.append(isRectangleBlack(pix, rate,
                                       top + i * rectangleHeigth,
                                       top + (i + 1) * rectangleHeigth,
                                       left + j * rectangleWidth,
